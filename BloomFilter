@@ -1,0 +1,64 @@
+def getInt(num_list):
+    n = len(num_list)
+    num = 0
+
+    for i in range(n):
+        num += num_list[i] * (2 ** (n - i - 1))
+
+    return num
+
+
+def Hash(binary_string):
+    even = []
+    odd = []
+
+    for j in range(len(binary_string)):
+        if j % 2 == 0:
+            even.append(int(binary_string[j]))
+        else:
+            odd.append(int(binary_string[j]))
+
+    return [even, odd]
+
+
+N = int(input("Enter total number of elements in set H: "))
+
+Hash_list = [0] * N
+
+print("Enter elements in set S:")
+S = list(map(int, input().split()))
+
+for i in range(len(S)):
+    binary_list = bin(S[i])[2:]
+
+    L = Hash(binary_list)
+    even_list = L[0]
+    odd_list = L[1]
+
+    hash1 = getInt(even_list) % N
+    hash2 = getInt(odd_list) % N
+
+    Hash_list[hash1] = 1
+    Hash_list[hash2] = 1
+
+print("H =", Hash_list)
+
+no_of_elements = int(input("Enter total number of elements in look-up: "))
+
+print("Enter elements of Look-Up:")
+lookup = list(map(int, input().split()))
+
+for i in range(no_of_elements):
+    binary_list = bin(lookup[i])[2:]
+
+    L = Hash(binary_list)
+    even_list = L[0]
+    odd_list = L[1]
+
+    hash1 = getInt(even_list) % N
+    hash2 = getInt(odd_list) % N
+
+    if Hash_list[hash1] == 1 and Hash_list[hash2] == 1:
+        print(lookup[i], "might be present in the S.")
+    else:
+        print(lookup[i], "is not present in the S.")
