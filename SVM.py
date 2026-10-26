@@ -1,49 +1,73 @@
 
-# Import required libraries
+# Support Vector Machine using Iris Dataset
+
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
-from sklearn.metrics import confusion_matrix, classification_report, accuracy_score
 from sklearn.pipeline import make_pipeline
+from sklearn.metrics import confusion_matrix, classification_report
 
-# Load the built-in Iris dataset
+# Load Iris dataset
 iris = load_iris()
 X = iris.data
 y = iris.target
 
-# Split data into training and testing sets
+print("Dataset shape:", X.shape)
+print("Number of classes:", len(np.unique(y)))
+
+# i. Data scaling
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# iii. Training and testing
 X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42, stratify=y
+    X_scaled, y, test_size=0.2, random_state=42, stratify=y
 )
 
-# i. Data scaling and ii. Create the SVM model
-# Pipeline scales data before fitting the SVM
-model = make_pipeline(
-    StandardScaler(),
-    SVC(kernel='linear', random_state=42)
-)
-
-# iii. Training and testing the model
+# ii. Create and train SVM model
+model = SVC(kernel="linear", random_state=42)
 model.fit(X_train, y_train)
+
+# Predict test data
 y_pred = model.predict(X_test)
 
-# Display accuracy
-print("Accuracy:", accuracy_score(y_test, y_pred))
+# iv. Confusion matrix
+cm = confusion_matrix(y_test, y_pred)
 
-# iv. Display confusion matrix
 print("\nConfusion Matrix:")
-print(confusion_matrix(y_test, y_pred))
+print(cm)
 
-# Display classification report
+plt.figure(figsize=(7, 5))
+sns.heatmap(
+    cm, annot=True, fmt="d", cmap="Blues",
+    xticklabels=iris.target_names,
+    yticklabels=iris.target_names
+)
+plt.xlabel("Predicted Class")
+plt.ylabel("Actual Class")
+plt.title("SVM - Confusion Matrix")
+plt.show()
+
+# Classification report
 print("\nClassification Report:")
-print(classification_report(y_test, y_pred, target_names=iris.target_names))
+print(classification_report(
+    y_test, y_pred, target_names=iris.target_names
+))
 
-# v. Display 5-fold cross-validation score
-cv_scores = cross_val_score(
-    make_pipeline(StandardScaler(), SVC(kernel='linear')),
-    X, y, cv=5, scoring='accuracy'
+# v. 5-fold cross-validation
+pipeline = make_pipeline(
+    StandardScaler(),
+    SVC(kernel="linear")
 )
 
-print("\n5-Fold Cross-Validation Scores:", cv_scores)
-print("Mean Cross-Validation Accuracy:", cv_scores.mean())
+scores = cross_val_score(pipeline, X, y, cv=5)
+
+print("\n5-Fold Cross-Validation Scores:")
+print(scores)
+
+print("Mean Cross-Validation Accuracy:", scores.mean())
