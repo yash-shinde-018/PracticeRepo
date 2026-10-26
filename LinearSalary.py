@@ -1,27 +1,74 @@
 
+# Simple Linear Regression using salary.csv
+
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 
-data = pd.read_csv("salary.csv")
-X = data[["months"]]
-y = data["salary"]
+# Load dataset
+df = pd.read_csv("salary.csv")
 
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42)
+print("First five rows:")
+print(df.head())
+
+# i. Data scaling
+X = df[["months"]]
+y = df["salary"]
 
 scaler = StandardScaler()
-X_train = scaler.fit_transform(X_train)
-X_test = scaler.transform(X_test)
+X_scaled = scaler.fit_transform(X)
 
+# iii. Training and testing
+X_train, X_test, y_train, y_test = train_test_split(
+    X_scaled, y, test_size=0.2, random_state=42
+)
+
+# ii. Create and train the model
 model = LinearRegression()
 model.fit(X_train, y_train)
+
+# Predict salary
 y_pred = model.predict(X_test)
 
+# iv. Evaluate the model
+mae = mean_absolute_error(y_test, y_pred)
 mse = mean_squared_error(y_test, y_pred)
-print("MAE:", mean_absolute_error(y_test, y_pred))
-print("MSE:", mse)
-print("RMSE:", np.sqrt(mse))
+rmse = np.sqrt(mse)
+
+print("\nModel Evaluation:")
+print("Mean Absolute Error (MAE):", mae)
+print("Mean Squared Error (MSE):", mse)
+print("Root Mean Squared Error (RMSE):", rmse)
+
+# Graph 1: Actual data and regression line
+plt.figure(figsize=(8, 5))
+plt.scatter(X["months"], y, color="blue", label="Actual Salary")
+
+x_line = np.linspace(
+    X["months"].min(), X["months"].max(), 100
+).reshape(-1, 1)
+
+x_line_scaled = scaler.transform(x_line)
+y_line = model.predict(x_line_scaled)
+
+plt.plot(x_line, y_line, color="red", label="Regression Line")
+plt.xlabel("Months")
+plt.ylabel("Salary")
+plt.title("Simple Linear Regression - Salary Prediction")
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Graph 2: Actual vs Predicted salary
+plt.figure(figsize=(8, 5))
+plt.scatter(y_test, y_pred, color="green")
+plt.xlabel("Actual Salary")
+plt.ylabel("Predicted Salary")
+plt.title("Actual vs Predicted Salary")
+plt.grid(True)
+plt.show()
