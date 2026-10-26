@@ -1,0 +1,40 @@
+def hash_function(x, a, b, p):
+    return (a * x + b) % p
+
+
+def count_trailing_zeros(binary):
+    count = 0
+    for bit in reversed(binary):
+        if bit == '0':
+            count += 1
+        else:
+            break
+    return count
+
+
+n = int(input("Enter number of elements in stream: "))
+stream = list(map(int, input("Enter stream elements: ").split()))
+
+a = int(input("Enter value of a: "))
+b = int(input("Enter value of b: "))
+p = int(input("Enter value of prime p: "))
+
+max_r = 0
+
+print("\nElement\tHash\tBinary\t\tR")
+
+for element in stream:
+    h = hash_function(element, a, b, p)
+    binary = bin(h)[2:]
+    r = count_trailing_zeros(binary)
+    max_r = max(max_r, r)
+
+    print(element, "\t", h, "\t", binary, "\t\t", r)
+
+estimate = 2 ** max_r
+
+print("\nMaximum r =", max_r)
+print("Estimated number of distinct elements =", estimate)
+
+actual = len(set(stream))
+print("Actual number of distinct elements =", actual)
