@@ -6,6 +6,8 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 
+import matplotlib.pyplot as plt
+
 data = pd.read_csv("rent.csv")
 X = data[["month"]]
 y = data["rent"]
@@ -25,3 +27,12 @@ mse = mean_squared_error(y_test, y_pred)
 print("MAE:", mean_absolute_error(y_test, y_pred))
 print("MSE:", mse)
 print("RMSE:", np.sqrt(mse))
+
+
+plt.scatter(X_test, y_test, color="blue", label="Actual Rent")
+plt.scatter(X_test, y_pred, color="red", label="Predicted Rent")
+plt.xlabel("Month")
+plt.ylabel("Renthh")
+plt.title("Linear Regression")
+plt.legend()
+plt.show()
