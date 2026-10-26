@@ -1,0 +1,44 @@
+
+import re
+from collections import defaultdict
+
+# Input
+text = input("Enter text: ")
+
+# 1. Splitting
+words = text.split()
+print("\n1. Splitting:")
+for i, word in enumerate(words, 1):
+    print(f"Split {i}: {[word]}")
+
+# 2. Mapping
+mapped_data = []
+print("\n2. Mapping:")
+for word in words:
+    word = re.sub(r"[^a-zA-Z0-9]", "", word).lower()
+    if word:
+        mapped_data.append((word, 1))
+        print(f"({word}, 1)")
+
+# 3. Shuffling
+shuffled_data = defaultdict(list)
+for word, count in mapped_data:
+    shuffled_data[word].append(count)
+
+print("\n3. Shuffling:")
+for word, counts in sorted(shuffled_data.items()):
+    print(f"{word} -> {counts}")
+
+# 4. Reducing
+reduced_data = {}
+for word, counts in shuffled_data.items():
+    reduced_data[word] = sum(counts)
+
+print("\n4. Reducing:")
+for word, count in sorted(reduced_data.items()):
+    print(f"{word} -> {count}")
+
+# 5. Final Result
+print("\n5. Final Result:")
+for word, count in sorted(reduced_data.items()):
+    print(f"{word} = {count}")
