@@ -1,73 +1,49 @@
 
-# Support Vector Machine using Iris Dataset
+# PCA Visualization using Wine Dataset
 
-import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
 
-from sklearn.datasets import load_iris
-from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.datasets import load_wine
 from sklearn.preprocessing import StandardScaler
-from sklearn.svm import SVC
-from sklearn.pipeline import make_pipeline
-from sklearn.metrics import confusion_matrix, classification_report
+from sklearn.decomposition import PCA
 
-# Load Iris dataset
-iris = load_iris()
-X = iris.data
-y = iris.target
+# Load Wine dataset
+wine = load_wine()
+X = wine.data
+y = wine.target
 
-print("Dataset shape:", X.shape)
-print("Number of classes:", len(np.unique(y)))
+print("Original dataset shape:", X.shape)
 
-# i. Data scaling
+# 1. Data scaling
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 
-# iii. Training and testing
-X_train, X_test, y_train, y_test = train_test_split(
-    X_scaled, y, test_size=0.2, random_state=42, stratify=y
-)
+# 2. Apply PCA to reduce dimensions to 2
+pca = PCA(n_components=2)
+X_pca = pca.fit_transform(X_scaled)
 
-# ii. Create and train SVM model
-model = SVC(kernel="linear", random_state=42)
-model.fit(X_train, y_train)
+print("Reduced dataset shape:", X_pca.shape)
 
-# Predict test data
-y_pred = model.predict(X_test)
+# 3. Display explained variance
+print("\nExplained Variance Ratio:")
+print(pca.explained_variance_ratio_)
 
-# iv. Confusion matrix
-cm = confusion_matrix(y_test, y_pred)
+print("Total explained variance:",
+      pca.explained_variance_ratio_.sum())
 
-print("\nConfusion Matrix:")
-print(cm)
+# 4. Visualize the dataset
+plt.figure(figsize=(8, 6))
 
-plt.figure(figsize=(7, 5))
-sns.heatmap(
-    cm, annot=True, fmt="d", cmap="Blues",
-    xticklabels=iris.target_names,
-    yticklabels=iris.target_names
-)
-plt.xlabel("Predicted Class")
-plt.ylabel("Actual Class")
-plt.title("SVM - Confusion Matrix")
+for i, name in enumerate(wine.target_names):
+    plt.scatter(
+        X_pca[y == i, 0],
+        X_pca[y == i, 1],
+        label=name
+    )
+
+plt.xlabel("Principal Component 1")
+plt.ylabel("Principal Component 2")
+plt.title("PCA Visualization of Wine Dataset")
+plt.legend()
+plt.grid(True)
 plt.show()
-
-# Classification report
-print("\nClassification Report:")
-print(classification_report(
-    y_test, y_pred, target_names=iris.target_names
-))
-
-# v. 5-fold cross-validation
-pipeline = make_pipeline(
-    StandardScaler(),
-    SVC(kernel="linear")
-)
-
-scores = cross_val_score(pipeline, X, y, cv=5)
-
-print("\n5-Fold Cross-Validation Scores:")
-print(scores)
-
-print("Mean Cross-Validation Accuracy:", scores.mean())
