@@ -1,0 +1,66 @@
+class DGIM:
+    def __init__(self, stream, window):
+        self.stream = stream
+        self.window = window
+        self.buckets = []
+
+    def process(self):
+        for time, bit in enumerate(self.stream, 1):
+            if bit == '1':
+                self.buckets.append([1, time])
+                self.merge()
+
+        boundary = len(self.stream) - self.window
+        self.buckets = [
+            b for b in self.buckets if b[1] > boundary
+        ]
+
+    def merge(self):
+        size = 1
+
+        while True:
+            matching = [b for b in self.buckets if b[0] == size]
+
+            if len(matching) <= 2:
+                break
+
+            first = matching[0]
+            second = matching[1]
+
+            self.buckets.remove(first)
+            self.buckets.remove(second)
+            self.buckets.insert(0, [size * 2, second[1]])
+
+            size *= 2
+
+    def estimate(self):
+        count = 0
+        boundary = len(self.stream) - self.window
+
+        for size, time in reversed(self.buckets):
+            if time > boundary:
+                count += size
+            else:
+                count += size // 2
+                break
+
+        return count
+
+
+stream = input("Enter Binary Stream: ")
+window = int(input("Enter Window Size: "))
+
+if not stream or any(bit not in '01' for bit in stream):
+    print("Invalid binary stream")
+elif window <= 0:
+    print("Window size must be positive")
+else:
+    window = min(window, len(stream))
+    dgim = DGIM(stream, window)
+    dgim.process()
+
+    last_bits = stream[-window:]
+
+    print("\nEstimated number of 1s:", dgim.estimate())
+    print("Actual number of 1s:", last_bits.count('1'))
+    print("Last", window, "bits:", last_bits)
