@@ -42,3 +42,6 @@ for word, count in sorted(reduced_data.items()):
 print("\n5. Final Result:")
 for word, count in sorted(reduced_data.items()):
     print(f"{word} = {count}")
+
+#Input:
+Enter text: Hello world hello Python world hello
