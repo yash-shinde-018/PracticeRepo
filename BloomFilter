@@ -62,3 +62,12 @@ for i in range(no_of_elements):
         print(lookup[i], "might be present in the S.")
     else:
         print(lookup[i], "is not present in the S.")
+
+
+#Input:
+Enter total number of elements in set H: 10
+Enter elements in set S:
+5 7 9
+Enter total number of elements in look-up: 4
+Enter elements of Look-Up:
+5 7 8 9
