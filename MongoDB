@@ -1,0 +1,35 @@
+1. Open the official MongoDB Community Server download page: Download MongoDB Community Server .
+   Select:
+    Version: the latest stable version offered.
+    Platform: Windows.
+    Package: MSI.
+  Click Download.
+
+2. Open the downloaded .msi file.
+  Click Next.
+  Accept the license agreement.
+  Select Complete installation.
+  If prompted, select Install MongoD as a Service.
+  Keep the default service name and settings.
+  Click Next and then Install.
+  Allow the installation to finish, then click Finish.
+
+3. Open the official MongoDB Shell download page .
+  Select Windows and the MSI installer.
+  Download and run the installer.
+  Follow the installation wizard.
+  Open a new Command Prompt or PowerShell window.
+
+  mongosh --version
+
+4. net start MongoDB
+5. mongosh
+6. show dbs
+use College
+db.createCollection("Students")
+db.Students.insertMany([
+    { rollno: 1, name: "Amit", age: 20, course: "BCA" },
+    { rollno: 2, name: "Priya", age: 21, course: "BCA" },
+    { rollno: 3, name: "Rahul", age: 20, course: "BSc" },
+    { rollno: 4, name: "Sneha", age: 22, course: "BCA" }
+])
