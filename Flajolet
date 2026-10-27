@@ -38,3 +38,10 @@ print("Estimated number of distinct elements =", estimate)
 
 actual = len(set(stream))
 print("Actual number of distinct elements =", actual)
+
+#Input:
+Enter number of elements in stream: 8
+Enter stream elements: 1 2 3 4 2 3 5 1
+Enter value of a: 3
+Enter value of b: 1
+Enter value of prime p: 17
