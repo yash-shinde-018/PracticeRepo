@@ -64,3 +64,7 @@ else:
     print("\nEstimated number of 1s:", dgim.estimate())
     print("Actual number of 1s:", last_bits.count('1'))
     print("Last", window, "bits:", last_bits)
+
+#Input:
+Enter Binary Stream: 101101011101
+Enter Window Size: 8
